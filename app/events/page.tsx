@@ -1,4 +1,4 @@
-"use client"
+ "use client"
 
 import type React from "react"
 
@@ -10,14 +10,26 @@ import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { Calendar, MapPin, Users, X } from "lucide-react"
 import { formatDate } from "@/lib/utils"
+import type { User } from "@supabase/supabase-js"
+import type { Database } from "@/lib/supabase/database.types"
+
+type Event = Database['public']['Tables']['events']['Row'] & {
+  users?: {
+    id: string
+    full_name: string
+    avatar_url: string | null
+    email: string
+  }
+  event_registrations?: { count: number }[]
+}
 
 export default function EventsPage() {
-  const [events, setEvents] = useState([])
+  const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState(null)
-  const [registeredEvents, setRegisteredEvents] = useState(new Set())
-  const [registering, setRegistering] = useState(new Set())
-  const [selectedEvent, setSelectedEvent] = useState(null)
+  const [user, setUser] = useState<User | null>(null)
+  const [registeredEvents, setRegisteredEvents] = useState(new Set<string>())
+  const [registering, setRegistering] = useState(new Set<string>())
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [registrationForm, setRegistrationForm] = useState({ full_name: "", email: "", phone: "" })
 
   useEffect(() => {
@@ -35,14 +47,16 @@ export default function EventsPage() {
         const { data: eventsData, error: eventsError } = await supabase
           .from("events")
           .select(`
-            id, 
-            title, 
-            description, 
-            date, 
-            location, 
-            image_url, 
-            capacity, 
+            id,
+            title,
+            description,
+            date,
+            location,
+            image_url,
+            capacity,
             user_id,
+            created_at,
+            updated_at,
             users!events_user_id_fkey(id, full_name, avatar_url, email),
             event_registrations(count)
           `)
@@ -55,9 +69,9 @@ export default function EventsPage() {
             .from("events")
             .select("id, title, description, date, location, image_url, capacity, user_id")
             .order("date", { ascending: true })
-          setEvents(fallbackData || [])
+          setEvents((fallbackData || []) as Event[])
         } else {
-          setEvents(eventsData || [])
+          setEvents((eventsData || []) as Event[])
         }
 
         // Fetch user's registrations
@@ -135,14 +149,16 @@ export default function EventsPage() {
       const { data: eventsData } = await supabase
         .from("events")
         .select(`
-          id, 
-          title, 
-          description, 
-          date, 
-          location, 
-          image_url, 
-          capacity, 
+          id,
+          title,
+          description,
+          date,
+          location,
+          image_url,
+          capacity,
           user_id,
+          created_at,
+          updated_at,
           users!events_user_id_fkey(id, full_name, avatar_url, email),
           event_registrations(count)
         `)

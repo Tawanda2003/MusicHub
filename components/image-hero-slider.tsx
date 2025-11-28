@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 interface HeroSlide {
   id: string
   title: string
-  description: string
+  description: string | null
   image_url: string
 }
 
@@ -23,7 +23,10 @@ export default function ImageHeroSlider() {
         const { data, error } = await supabase
           .from("hero_sliders")
           .select("*")
+          .not("image_url", "is", null)
+          .neq("image_url", "")
           .order("order_index", { ascending: true })
+          .limit(3)
 
         if (error) throw error
         setSlides(data || [])
@@ -60,11 +63,7 @@ export default function ImageHeroSlider() {
   }
 
   if (slides.length === 0) {
-    return (
-      <div className="w-full h-96 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl flex items-center justify-center">
-        <p className="text-muted-foreground">No hero slides available</p>
-      </div>
-    )
+    return null
   }
 
   const slide = slides[currentSlide]
@@ -75,13 +74,10 @@ export default function ImageHeroSlider() {
       <div className="relative overflow-hidden rounded-xl h-64 sm:h-80 md:h-96 lg:h-[500px] group shadow-lg">
         <div className="absolute inset-0 transition-opacity duration-700 ease-in-out" style={{ opacity: 1 }}>
           <img
-            src={slide.image_url || "/placeholder.svg?height=500&width=1200&query=music-hero"}
+            src={slide.image_url}
             alt={slide.title}
             className="w-full h-full object-cover"
             crossOrigin="anonymous"
-            onError={(e) => {
-              e.currentTarget.src = "/music-hero.jpg"
-            }}
           />
           {/* Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

@@ -10,8 +10,19 @@ import { ChevronLeft, ChevronRight, Music } from "lucide-react"
 import ImageHeroSlider from "@/components/image-hero-slider"
 import StatsCard from "@/components/stats-card"
 
+interface Post {
+  id: string
+  title: string
+  description: string
+  image_url: string | null
+  users: {
+    full_name: string
+    avatar_url: string | null
+  } | null
+}
+
 export default function HomePage() {
-  const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useState<Post[]>([])
   const [currentSlide, setCurrentSlide] = useState(0)
   const [loading, setLoading] = useState(true)
 
@@ -26,7 +37,7 @@ export default function HomePage() {
           .limit(6)
 
         if (error) throw error
-        setPosts(data || [])
+        setPosts((data || []) as Post[])
       } catch (error) {
         console.error("Error fetching posts:", error)
       } finally {

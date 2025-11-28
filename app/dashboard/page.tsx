@@ -10,17 +10,22 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Plus, Edit2, Trash2, X } from "lucide-react"
+import type { User } from "@supabase/supabase-js"
+import type { Database } from "@/lib/supabase/database.types"
+
+type Post = Database['public']['Tables']['posts']['Row']
+type Event = Database['public']['Tables']['events']['Row']
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [user, setUser] = useState(null)
-  const [posts, setPosts] = useState([])
-  const [events, setEvents] = useState([])
+  const [user, setUser] = useState<User | null>(null)
+  const [posts, setPosts] = useState<Post[]>([])
+  const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [showNewPostModal, setShowNewPostModal] = useState(false)
   const [showNewEventModal, setShowNewEventModal] = useState(false)
-  const [editingPost, setEditingPost] = useState(null)
-  const [editingEvent, setEditingEvent] = useState(null)
+  const [editingPost, setEditingPost] = useState<Post | null>(null)
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null)
   const [newPost, setNewPost] = useState({ title: "", description: "", image_url: "" })
   const [newEvent, setNewEvent] = useState({
     title: "",
