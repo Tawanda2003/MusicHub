@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 16, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/lib/supabase/middleware.ts"],"sourcesContent":["import { type NextRequest, NextResponse } from \"next/server\"\n\nexport async function updateSession(request: NextRequest) {\n  const response = NextResponse.next({\n    request,\n  })\n\n  return response\n}\n"],"names":[],"mappings":";;;;AAAA;AAAA;;AAEO,eAAe,cAAc,OAAoB;IACtD,MAAM,WAAW,gMAAY,CAAC,IAAI,CAAC;QACjC;IACF;IAEA,OAAO;AACT"}},
+    {"offset": {"line": 33, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/middleware.ts"],"sourcesContent":["import { updateSession } from \"@/lib/supabase/middleware\"\nimport type { NextRequest } from \"next/server\"\n\nexport async function middleware(request: NextRequest) {\n  return await updateSession(request)\n}\n\nexport const config = {\n  matcher: [\"/((?!_next/static|_next/image|favicon.ico|.*\\\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)\"],\n}\n"],"names":[],"mappings":";;;;;;AAAA;;AAGO,eAAe,WAAW,OAAoB;IACnD,OAAO,MAAM,IAAA,sJAAa,EAAC;AAC7B;AAEO,MAAM,SAAS;IACpB,SAAS;QAAC;KAAoF;AAChG"}}]
+}

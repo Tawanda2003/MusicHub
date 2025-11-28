@@ -1,0 +1,3 @@
+-- Note: This is sample data. Run after schema is set up.
+-- You'll need to insert users through the auth system in the app first.
+-- This is a placeholder for reference.
